@@ -1,0 +1,6 @@
+build/
+.signing/
+__pycache__/
+# Binaries and build metadata are published as GitHub Releases; only the usage notes are tracked.
+dist/*
+!dist/使用说明-*.md
