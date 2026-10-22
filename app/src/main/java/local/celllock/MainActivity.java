@@ -645,10 +645,10 @@ public final class MainActivity extends Activity {
         names.addView(text("版本 " + versionName(), 13, MUTED));
         heading.addView(names, weighted());
         content.addView(heading, width());
-        LinearLayout.LayoutParams first = width(); first.topMargin = dp(16);
+        LinearLayout.LayoutParams first = width(); first.topMargin = dp(12);
         content.addView(aboutRow("开发者", DEVELOPER, false), first);
         content.addView(aboutRow("项目主页", PROJECT_URL.substring("https://".length()), true), width());
-        TextView scope = text("支持 LTE 与 5G SA 锁频点、锁小区，需要 Root。\n适配 Xiaomi 13 Pro / Android 13 及已核对的基带和诊断库。\n每台手机独立保存恢复配置，请勿跨手机复制恢复文件。", 13, MUTED);
+        TextView scope = text("支持 LTE 与 5G SA 锁频点、锁小区，需要 Root。\n适配 Xiaomi 13 Pro / Android 13\n及已核对的基带和诊断库。\n恢复配置按手机独立保存，请勿跨手机复制。", 13, MUTED);
         scope.setPadding(0, dp(12), 0, 0);
         content.addView(scope, width());
         ScrollView scroll = new ScrollView(this);
@@ -656,20 +656,25 @@ public final class MainActivity extends Activity {
         new AlertDialog.Builder(this).setView(scroll).setPositiveButton("关闭", null).show();
     }
 
+    /** Label above value, so a long URL gets the full dialog width. */
     private LinearLayout aboutRow(String label, String value, boolean link) {
-        LinearLayout line = row();
-        line.setMinimumHeight(dp(48));
-        line.addView(text(label, 14, MUTED), new LinearLayout.LayoutParams(dp(72), -2));
+        LinearLayout block = new LinearLayout(this);
+        block.setOrientation(LinearLayout.VERTICAL);
+        block.setPadding(0, dp(6), 0, dp(6));
+        LinearLayout top = row();
+        top.addView(text(label, 13, MUTED), weighted());
+        if (link) top.addView(text("打开", 13, ACTION_BLUE));
+        block.addView(top, width());
         TextView field = text(value, 15, link ? ACTION_BLUE : INK);
         field.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        line.addView(field, weighted());
-        if (!link) return line;
-        line.addView(text("打开", 13, ACTION_BLUE));
-        line.setBackground(new RippleDrawable(ColorStateList.valueOf(0x22174EA6), null, background(Color.WHITE, 8)));
-        line.setContentDescription(label + " " + value + "，点按在浏览器中打开，长按复制网址");
-        line.setOnClickListener(v -> openProjectPage());
-        line.setOnLongClickListener(v -> { copyProjectUrl(); return true; });
-        return line;
+        block.addView(field, width());
+        if (!link) return block;
+        block.setMinimumHeight(dp(48));
+        block.setBackground(new RippleDrawable(ColorStateList.valueOf(0x22174EA6), null, background(Color.WHITE, 8)));
+        block.setContentDescription(label + " " + value + "，点按在浏览器中打开，长按复制网址");
+        block.setOnClickListener(v -> openProjectPage());
+        block.setOnLongClickListener(v -> { copyProjectUrl(); return true; });
+        return block;
     }
 
     private void openProjectPage() {
